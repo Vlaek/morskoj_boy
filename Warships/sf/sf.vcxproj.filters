@@ -19,4 +19,21 @@
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SFML\bin\sfml-audio-d-2.dll">
+      <Filter>Файлы заголовков</Filter>
+    </None>
+    <None Include="SFML\bin\sfml-graphics-d-2.dll">
+      <Filter>Файлы заголовков</Filter>
+    </None>
+    <None Include="SFML\bin\sfml-network-d-2.dll">
+      <Filter>Файлы заголовков</Filter>
+    </None>
+    <None Include="SFML\bin\sfml-system-d-2.dll">
+      <Filter>Файлы заголовков</Filter>
+    </None>
+    <None Include="SFML\bin\sfml-window-d-2.dll">
+      <Filter>Файлы заголовков</Filter>
+    </None>
+  </ItemGroup>
 </Project>

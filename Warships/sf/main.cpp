@@ -1,5 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include "SFML/include/SFML/Graphics.hpp"
+#include "SFML/include/SFML/Audio.hpp"
 #include <iostream>
 #include <locale.h>
 #include <conio.h>
