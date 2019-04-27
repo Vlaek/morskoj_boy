@@ -21,6 +21,7 @@ void showMenu(RenderWindow & window) {
 	Sprite menu1(menuTexture1), menu2(menuTexture2), menu3(menuTexture3), menuBg(menuBackground), menuB(menuBack);
 	bool isMenu = 1;
 	int menuNum = 0;
+
 	menu1.setPosition(625, 255);
 	menu2.setPosition(625, 315);
 	menu3.setPosition(625, 375);
