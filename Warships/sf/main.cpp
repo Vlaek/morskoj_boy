@@ -107,124 +107,6 @@ void set_rand_ships(int map[N][N], int size_ship, int ship_id)
 	}
 }
 
-void showMenu(RenderWindow & window) {
-	Texture menuTexture1, menuTexture2, menuTexture3, menuBackground, menuBack;
-	menuTexture1.loadFromFile("images/111.png");
-	menuTexture2.loadFromFile("images/222.png");
-	menuTexture3.loadFromFile("images/333.png");
-	menuBackground.loadFromFile("images/background.png");
-	menuBack.loadFromFile("images/back.png");
-	Sprite menu1(menuTexture1), menu2(menuTexture2), menu3(menuTexture3), menuBg(menuBackground), menuB(menuBack);
-	bool isMenu = 1;
-	int menuNum = 0;
-	menu1.setPosition(625, 255);
-	menu2.setPosition(625, 315);
-	menu3.setPosition(625, 375);
-	menuBg.setPosition(425, 275);
-	menuB.setPosition(100, 30);
-
-	while (isMenu)
-	{
-		menu1.setColor(Color::White);
-		menu2.setColor(Color::White);
-		menu3.setColor(Color::White);
-		menuNum = 0;
-		window.clear(Color(130, 180, 220));
-
-		if (IntRect(625, 255, 300, 50).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Blue); menuNum = 1; }
-		if (IntRect(625, 315, 300, 50).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Blue); menuNum = 2; }
-		if (IntRect(625, 375, 300, 50).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Blue); menuNum = 3; }
-		
-
-		if (Mouse::isButtonPressed(Mouse::Left))
-		{
-			if (menuNum == 1) 
-			{ 
-				isMenu = false;
-			} 
-			if (menuNum == 2) 
-			{ 
-				window.draw(menuBg); 
-				window.draw(menuB); 
-				window.display();
-				while (!Keyboard::isKeyPressed(Keyboard::Escape)); 
-			}
-			if (menuNum == 3) { isMenu = false; }
-		}
-
-		window.draw(menu1);
-		window.draw(menu2);
-		window.draw(menu3);
-
-		window.display();
-	}
-}
-
-void showGameScene(RenderWindow &window) {
-	int map[10][10] = { 0 }; //человек
-	int map2[10][10] = { 0 }; //комп
-
-	int ships1[11] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 }; //жизни
-	int ships2[11] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
-
-	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
-	RectangleShape playerShip[10][10], enemyShip[10][10];
-
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			playerShip[i][j].setSize(Vector2f(50, 50));
-			playerShip[i][j].setPosition(55 + i * 55, 55 + j * 55);
-			enemyShip[i][j].setSize(Vector2f(50, 50));
-			enemyShip[i][j].setPosition(655 + i * 55, 55 + j * 55);
-		}
-	}
-	playerfield.setPosition(50, 50); enemyfield.setPosition(650, 50);
-	playerfield.setFillColor(Color::Black); enemyfield.setFillColor(Color::Black);
-
-	for(int i = 1; i <= 10; i++)
-	{
-		set_rand_ships(map, ships1[i], i);
-	}
-
-	for (int i = 1; i <= 10; i++)
-	{
-		set_rand_ships(map2, ships2[i], i);
-	}
-
-	while (window.isOpen() ) {
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed)
-				window.close();
-		}
-
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				if (map[i][j]) playerShip[i][j].setFillColor(Color::Black);
-				else playerShip[i][j].setFillColor(Color::White);
-				if (map2[i][j]) enemyShip[i][j].setFillColor(Color::Black);
-				else enemyShip[i][j].setFillColor(Color::White);
-			}
-		}
-
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) window.close();
-
-		window.clear(Color::Blue);
-		window.draw(playerfield);
-		window.draw(enemyfield);
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				if (playerShip[i][j].getGlobalBounds().contains(Mouse::getPosition().x, Mouse::getPosition().y)) playerShip[i][j].setFillColor(Color::Yellow);
-				if (enemyShip[i][j].getGlobalBounds().contains(Mouse::getPosition().x, Mouse::getPosition().y)) enemyShip[i][j].setFillColor(Color::Yellow);
-				window.draw(playerShip[i][j]);
-				window.draw(enemyShip[i][j]);
-			}
-		}
-		window.display();
-	}
-}
-
 void drawing(int map[N][N], int mask[N][N], bool useMask) {
 	cout << ' ';
 	for (int i = 0; i < N; i++) // прорисовка
@@ -295,8 +177,134 @@ int shot(int x, int y, int map[N][N], int mask[N][N], int ships[10])
 	return result;
 }
 
+void showMenu(RenderWindow & window) {
+	Texture menuTexture1, menuTexture2, menuTexture3, menuBackground, menuBack, imba;
+	menuTexture1.loadFromFile("images/111.png");
+	menuTexture2.loadFromFile("images/222.png");
+	menuTexture3.loadFromFile("images/333.png");
+	imba.loadFromFile("images/ivasik.jpg");
+	menuBackground.loadFromFile("images/background.png");
+	menuBack.loadFromFile("images/back.png");
+	Sprite menu1(menuTexture1), menu2(menuTexture2), menu3(menuTexture3), menuBg(menuBackground), menuB(menuBack), i(imba);
+	bool isMenu = 1;
+	int menuNum = 0;
+	menu1.setPosition(625, 255);
+	menu2.setPosition(625, 315);
+	menu3.setPosition(625, 375);
+	menuBg.setPosition(425, 275);
+	menuB.setPosition(100, 30);
+	i.setPosition(370, 235);
+
+	while (isMenu)
+	{
+		menu1.setColor(Color::White);
+		menu2.setColor(Color::White);
+		menu3.setColor(Color::White);
+		menuNum = 0;
+		window.clear(Color(130, 180, 220));
+
+		if (IntRect(625, 255, 300, 50).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Blue); menuNum = 1; }
+		if (IntRect(625, 315, 300, 50).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Blue); menuNum = 2; }
+		if (IntRect(625, 375, 300, 50).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Blue); menuNum = 3; }
+
+		if (Mouse::isButtonPressed(Mouse::Left))
+		{
+			if (menuNum == 1) 
+			{ 
+				isMenu = false;
+			} 
+			if (menuNum == 2) 
+			{ 
+				window.draw(menuBg); 
+				window.draw(menuB); 
+				window.display();
+				while (!Keyboard::isKeyPressed(Keyboard::Escape)); 
+			}
+			if (menuNum == 3) 
+			{
+				exit(0);
+			}
+		}
+
+		window.draw(menu1);
+		window.draw(menu2);
+		window.draw(menu3);
+		window.draw(i);
+
+		window.display();
+	}
+}
+
+void showGameScene(RenderWindow &window) {
+	int map[10][10] = { 0 }; //человек
+	int map2[10][10] = { 0 }; //комп
+
+	int ships1[11] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 }; //жизни
+	int ships2[11] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+
+	//int mask[N][N] = { 0 }; //chelovek
+	//int mask2[N][N] = { 0 }; //peka
+
+	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
+	RectangleShape playerShip[10][10], enemyShip[10][10];
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			playerShip[i][j].setSize(Vector2f(50, 50));
+			playerShip[i][j].setPosition(235 + i * 55, 175 + j * 55);
+			enemyShip[i][j].setSize(Vector2f(50, 50));
+			enemyShip[i][j].setPosition(835 + i * 55, 175 + j * 55);
+		}
+	}
+	playerfield.setPosition(230, 170); enemyfield.setPosition(830, 170);
+	playerfield.setFillColor(Color::Black); enemyfield.setFillColor(Color::Black);
+
+	for(int i = 1; i <= 10; i++)
+	{
+		set_rand_ships(map, ships1[i], i);
+	}
+
+	for (int i = 1; i <= 10; i++)
+	{
+		set_rand_ships(map2, ships2[i], i);
+	}
+
+	while (window.isOpen() ) {
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+		}
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (map[i][j]) playerShip[i][j].setFillColor(Color::Black);
+				else playerShip[i][j].setFillColor(Color::White);
+				if (map2[i][j]) enemyShip[i][j].setFillColor(Color::Black);
+				else enemyShip[i][j].setFillColor(Color::White);
+			}
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) window.close();
+
+		window.clear(Color::Blue);
+		window.draw(playerfield);
+		window.draw(enemyfield);
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (playerShip[i][j].getGlobalBounds().contains(Mouse::getPosition().x, Mouse::getPosition().y)) playerShip[i][j].setFillColor(Color::Yellow);
+				if (enemyShip[i][j].getGlobalBounds().contains(Mouse::getPosition().x, Mouse::getPosition().y)) enemyShip[i][j].setFillColor(Color::Yellow);
+				window.draw(playerShip[i][j]);
+				window.draw(enemyShip[i][j]);
+			}
+		}
+		window.display();
+	}
+}
+
 int main() {
-	RenderWindow window(VideoMode::getDesktopMode(), "Test!", Style::Fullscreen);
+	RenderWindow window(VideoMode::getDesktopMode(), "Test!");
 	bool menu = true;
 	setlocale(LC_ALL, "Russian");
 	srand(time(NULL));
@@ -304,17 +312,6 @@ int main() {
 	showMenu(window);
 
 	showGameScene(window);
-
-
-		//while (true)
-		//{
-			//Event event;
-			//while (window.pollEvent(event))
-			//{
-			//	if (event.type == Event::Closed)
-			//		window.close();
-			//}
-		//
 
 		//	int map[N][N] = { 0 }; //человек
 		//	int map2[N][N] = { 0 }; //комп
@@ -332,7 +329,7 @@ int main() {
 		//	for (int i = 1; i <= 10; i++)
 		//	{
 		//		set_rand_ships(map2, ships2[i], i);
-		//	}
+		//	}   ///////////////////////////////////////////////////////
 
 		//	int x = 0, y = 0;
 
