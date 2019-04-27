@@ -66,7 +66,7 @@ void showMenu(RenderWindow & window) {
 
 const int N = 10;
 int Ships_id = 1;
-int Ships[16] = { 0 };  //количество корабликов + 1
+int Ships[16] = { 0 };  //количество корабликов + 1/
 
 bool set_ship(int map[N][N], int x, int y, int dir, int size_ship)
 {
