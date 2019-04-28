@@ -213,7 +213,6 @@ void showMenu(RenderWindow & window) {
 		if (IntRect(5, 310, 360, 65).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Yellow); menuNum = 1; }
 		if (IntRect(5, 400, 400, 65).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Yellow); menuNum = 2; }
 		if (IntRect(5, 490, 240, 65).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Yellow); menuNum = 3; }
-
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
 			if (menuNum == 1) 
@@ -222,12 +221,18 @@ void showMenu(RenderWindow & window) {
 			} 
 			if (menuNum == 2)
 			{
-				window.draw(background);
-				window.draw(back);
-				window.draw(rules);
-				window.display();
-
-				while (!Keyboard::isKeyPressed(Keyboard::Escape));
+				while (true) {
+					back.setColor(Color::White);
+					if (IntRect(80, 700, 170, 80).contains(Mouse::getPosition(window))) {
+						back.setColor(Color::Yellow);
+						if (Mouse::isButtonPressed(Mouse::Left)) break;
+					}
+					if (Keyboard::isKeyPressed(Keyboard::Escape)) break;
+					window.draw(background);
+					window.draw(back);
+					window.draw(rules);
+					window.display();
+				}
 			}
 			if (menuNum == 3) 
 			{
