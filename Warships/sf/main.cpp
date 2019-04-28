@@ -221,7 +221,8 @@ void showMenu(RenderWindow & window) {
 			} 
 			if (menuNum == 2)
 			{
-				while (true) {
+				while (true)
+				{
 					back.setColor(Color::White);
 					if (IntRect(80, 700, 170, 80).contains(Mouse::getPosition(window))) {
 						back.setColor(Color::Yellow);
