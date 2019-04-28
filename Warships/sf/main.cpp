@@ -184,35 +184,35 @@ void showMenu(RenderWindow & window) {
 	Rules.loadFromFile("images/Rules.png");
 	Exit.loadFromFile("images/Exit.png");
 	imba.loadFromFile("images/ivasik.jpg");
-	//menuBackground.loadFromFile("images/background.png");
+	menuBackground.loadFromFile("images/background.png");
 	menuBack.loadFromFile("images/back.png");
 	Rules.loadFromFile("images/rules.png");
 	PageOfRules.loadFromFile("images/PageOfRules.png");
 
-	Sprite menu1(NewGame), menu2(Rules), menu3(Exit), back(menuBack), i(imba), rules(PageOfRules);
+	Sprite menu1(NewGame), menu2(Rules), menu3(Exit), back(menuBack), background(menuBackground), i(imba), rules(PageOfRules);
 
 	bool isMenu = 1;
 	int menuNum = 0;
 
-	menu1.setPosition(625, 255);
-	menu2.setPosition(625, 325);
-	menu3.setPosition(625, 395);
-	//menuBg.setPosition(800, 40);
-	back.setPosition(30, 30);
-	i.setPosition(370, 235);
-	rules.setPosition(100, 50);
+	menu1.setPosition(5, 310);
+	menu2.setPosition(5, 400);
+	menu3.setPosition(5, 490);
+	background.setPosition(0, 0);
+	back.setPosition(80, 700);
+	i.setPosition(420, 150);
+	rules.setPosition(320, 70);
 
 	while (isMenu)
 	{
 		menu1.setColor(Color::White);
 		menu2.setColor(Color::White);
 		menu3.setColor(Color::White);
-		menuNum = 0;
-		window.clear(Color(130, 180, 220));
 
-		if (IntRect(625, 255, 360, 65).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Blue); menuNum = 1; }
-		if (IntRect(625, 325, 400, 65).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Blue); menuNum = 2; }
-		if (IntRect(625, 395, 240, 65).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Blue); menuNum = 3; }
+		menuNum = 0;
+
+		if (IntRect(5, 310, 360, 65).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Yellow); menuNum = 1; }
+		if (IntRect(5, 400, 400, 65).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Yellow); menuNum = 2; }
+		if (IntRect(5, 490, 240, 65).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Yellow); menuNum = 3; }
 
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
@@ -222,9 +222,11 @@ void showMenu(RenderWindow & window) {
 			} 
 			if (menuNum == 2)
 			{
+				window.draw(background);
 				window.draw(back);
 				window.draw(rules);
 				window.display();
+
 				while (!Keyboard::isKeyPressed(Keyboard::Escape));
 			}
 			if (menuNum == 3) 
@@ -233,6 +235,7 @@ void showMenu(RenderWindow & window) {
 			}
 		}
 
+		window.draw(background);
 		window.draw(menu1);
 		window.draw(menu2);
 		window.draw(menu3);
@@ -252,27 +255,32 @@ void showGameScene(RenderWindow &window) {
 	int mask[N][N] = { 0 }; //chelovek
 	int mask2[N][N] = { 0 }; //peka
 
+
 	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
-	Texture PlayerFlot, BotFlot;
+	Texture PlayerFlot, BotFlot, menuBackground;
 
 	PlayerFlot.loadFromFile("images/PlayerFlot.png");
 	BotFlot.loadFromFile("images/BotFlot.png");
+	menuBackground.loadFromFile("images/backgroundInGame.png");
 
-	Sprite PF(PlayerFlot), BF(BotFlot);
+	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground);
 
-	PF.setPosition(410, 130);
-	BF.setPosition(990, 130);
+	PF.setPosition(330, 135);
+	BF.setPosition(920, 135);
+	background.setPosition(0, 0);
+
+	window.draw(background);
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			playerShip[i][j].setSize(Vector2f(50, 50));
-			playerShip[i][j].setPosition(235 + i * 55, 175 + j * 55);
+			playerShip[i][j].setPosition(235 + i * 55, 205 + j * 55);
 			enemyShip[i][j].setSize(Vector2f(50, 50));
-			enemyShip[i][j].setPosition(835 + i * 55, 175 + j * 55);
+			enemyShip[i][j].setPosition(835 + i * 55, 205 + j * 55);
 		}
 	}
-	playerfield.setPosition(230, 170); enemyfield.setPosition(830, 170);
+	playerfield.setPosition(230, 200); enemyfield.setPosition(830, 200);
 	playerfield.setFillColor(Color::Black); enemyfield.setFillColor(Color::Black);
 
 	for(int i = 1; i <= 10; i++)
@@ -302,9 +310,10 @@ void showGameScene(RenderWindow &window) {
 			}
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) window.close();
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) showMenu(window);
 
-		window.clear(Color::Blue);
+		window.clear();
+		window.draw(background);
 		window.draw(playerfield);
 		window.draw(PF);
 		window.draw(enemyfield);
@@ -319,7 +328,7 @@ void showGameScene(RenderWindow &window) {
 				window.draw(enemyShip[i][j]);
 			}
 		}
-
+		
 		window.display();
 	}
 }
