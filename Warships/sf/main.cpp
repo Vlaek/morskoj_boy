@@ -178,7 +178,7 @@ int shot(int x, int y, int map[N][N], int mask[N][N], int ships[10])
 }
 
 void showMenu(RenderWindow & window) {
-	Texture NewGame, Rules, Exit, menuBackground, menuBack, imba, PageOfRules;
+	Texture NewGame, Rules, Exit, menuBackground, menuBack, imba, PageOfRules, Mouse;
 
 	NewGame.loadFromFile("images/NewGame.png");
 	Rules.loadFromFile("images/Rules.png");
@@ -188,8 +188,9 @@ void showMenu(RenderWindow & window) {
 	menuBack.loadFromFile("images/back.png");
 	Rules.loadFromFile("images/rules.png");
 	PageOfRules.loadFromFile("images/PageOfRules.png");
+	Mouse.loadFromFile("images/Mouse.png");
 
-	Sprite menu1(NewGame), menu2(Rules), menu3(Exit), back(menuBack), background(menuBackground), i(imba), rules(PageOfRules);
+	Sprite menu1(NewGame), menu2(Rules), menu3(Exit), back(menuBack), background(menuBackground), i(imba), rules(PageOfRules), mouse(Mouse);
 
 	bool isMenu = 1;
 	int menuNum = 0;
@@ -202,6 +203,8 @@ void showMenu(RenderWindow & window) {
 	i.setPosition(420, 150);
 	rules.setPosition(320, 70);
 
+	window.setMouseCursorVisible(false);
+
 	while (isMenu)
 	{
 		menu1.setColor(Color::White);
@@ -210,9 +213,9 @@ void showMenu(RenderWindow & window) {
 
 		menuNum = 0;
 
-		if (IntRect(5, 310, 360, 65).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Yellow); menuNum = 1; }
-		if (IntRect(5, 400, 400, 65).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Yellow); menuNum = 2; }
-		if (IntRect(5, 490, 240, 65).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Yellow); menuNum = 3; }
+		if (IntRect(5, 310, 360, 63).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Yellow); menuNum = 1; }
+		if (IntRect(5, 400, 400, 63).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Yellow); menuNum = 2; }
+		if (IntRect(5, 490, 240, 63).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Yellow); menuNum = 3; }
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
 			if (menuNum == 1) 
@@ -232,6 +235,8 @@ void showMenu(RenderWindow & window) {
 					window.draw(background);
 					window.draw(back);
 					window.draw(rules);
+					mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y - 3);
+					window.draw(mouse);
 					window.display();
 				}
 			}
@@ -240,13 +245,14 @@ void showMenu(RenderWindow & window) {
 				exit(0);
 			}
 		}
-
 		window.draw(background);
 		window.draw(menu1);
 		window.draw(menu2);
 		window.draw(menu3);
 		window.draw(i);
-
+		window.draw(mouse);
+		mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y - 3);
+		window.draw(mouse);
 		window.display();
 	}
 }
@@ -264,13 +270,14 @@ void showGameScene(RenderWindow &window) {
 
 	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
-	Texture PlayerFlot, BotFlot, menuBackground;
+	Texture PlayerFlot, BotFlot, menuBackground, Mouse;
 
 	PlayerFlot.loadFromFile("images/PlayerFlot.png");
 	BotFlot.loadFromFile("images/BotFlot.png");
 	menuBackground.loadFromFile("images/backgroundInGame.png");
+	Mouse.loadFromFile("images/Mouse.png");
 
-	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground);
+	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground), mouse(Mouse);
 
 	PF.setPosition(330, 135);
 	BF.setPosition(920, 135);
@@ -334,16 +341,19 @@ void showGameScene(RenderWindow &window) {
 				window.draw(enemyShip[i][j]);
 			}
 		}
-		
+		mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y - 3);
+		window.draw(mouse);
 		window.display();
 	}
 }
 
 int main() {
-	RenderWindow window(VideoMode::getDesktopMode(), "Test!");
-	bool menu = true;
 	setlocale(LC_ALL, "Russian");
 	srand(time(NULL));
+
+	RenderWindow window(VideoMode::getDesktopMode(), "Test!");
+
+	bool menu = true;   // xz
 
 	showMenu(window);
 
