@@ -10,8 +10,6 @@
 using namespace sf;
 using namespace std;
 
-//менюшка
-
 const int N = 10;
 int Ships_id = 1;
 int Ships[16] = { 0 };  //количество корабликов + 1/
@@ -216,6 +214,7 @@ void showMenu(RenderWindow & window) {
 		if (IntRect(5, 310, 360, 63).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Yellow); menuNum = 1; }
 		if (IntRect(5, 400, 400, 63).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Yellow); menuNum = 2; }
 		if (IntRect(5, 490, 240, 63).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Yellow); menuNum = 3; }
+
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
 			if (menuNum == 1) 
@@ -227,7 +226,8 @@ void showMenu(RenderWindow & window) {
 				while (true)
 				{
 					back.setColor(Color::White);
-					if (IntRect(80, 700, 170, 80).contains(Mouse::getPosition(window))) {
+					if (IntRect(80, 700, 170, 80).contains(Mouse::getPosition(window))) 
+					{
 						back.setColor(Color::Yellow);
 						if (Mouse::isButtonPressed(Mouse::Left)) break;
 					}
@@ -270,18 +270,20 @@ void showGameScene(RenderWindow &window) {
 
 	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
-	Texture PlayerFlot, BotFlot, menuBackground, Mouse;
+	Texture PlayerFlot, BotFlot, menuBackground, Mouse, menuBack;
 
 	PlayerFlot.loadFromFile("images/PlayerFlot.png");
 	BotFlot.loadFromFile("images/BotFlot.png");
 	menuBackground.loadFromFile("images/backgroundInGame.png");
 	Mouse.loadFromFile("images/Mouse.png");
+	menuBack.loadFromFile("images/back.png");
 
-	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground), mouse(Mouse);
+	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground), mouse(Mouse), back(menuBack);
 
 	PF.setPosition(330, 135);
 	BF.setPosition(920, 135);
 	background.setPosition(0, 0);
+	back.setPosition(80, 700);
 
 	window.draw(background);
 
