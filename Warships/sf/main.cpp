@@ -415,6 +415,7 @@ void showGameScene(RenderWindow &window) {
 		window.draw(back);
 		window.draw(plus);
 		window.draw(minus);
+
 		for (int i = 0; i < 10; i++) 
 		{
 			for (int j = 0; j < 10; j++) 
@@ -425,6 +426,216 @@ void showGameScene(RenderWindow &window) {
 				window.draw(enemyShip[i][j]);
 			}
 		}
+
+		int resultShot = 0;
+			drawing(map, mask, 0);
+			cout << endl;
+			drawing(map2, mask2, 1);
+
+			if (step == 1)
+			{
+				cout << endl << "Введите координаты цели (цифрами): ";
+
+				cin >> x;
+				cin >> y;
+
+				resultShot = shot(x, y, map2, mask2, ships2);
+
+				if (resultShot == 1)
+				{
+					cout << "\nРанен\n\n";
+				}
+				else if (resultShot == 2)
+				{
+					bool died = 1;
+					for (int i = 1; i < 10; i++)
+					{
+						if (ships2[i] != 0)
+						{
+							died = 0;
+							break;
+						}
+					}
+					if (died == 1)
+					{
+						winPlayer = 1;
+						break;
+					}
+					cout << "\nУбит\n\n" << endl;
+				}
+				else
+				{
+					cout << "\nПромах\n\n" << endl;
+				}
+			}
+			else
+			{
+				cout << endl << "Ход компьютера\n";
+				Sleep(500);
+
+				if (mode == 0)
+				{
+					do //проверка стрелял ли бот в эту точку
+					{
+						xBot = rand() % N;
+						yBot = rand() % N;
+
+						resultShot = shot(xBot, yBot, map, mask, ships1);
+					} while (resultShot == 3);
+
+					if (resultShot == 1)
+					{
+						mode = 1;
+
+						firstHitX = xBot;
+						firstHitY = yBot;
+
+						if (!dirs.empty()) //проверяем не пустой ли вектор
+						{
+							dir = dirs[dirs.size() - 1]; //доступ к последнему элементу
+							dirs.pop_back();
+						}
+
+						cout << "\nРанен\n\n";
+					}
+					else if (resultShot == 2)
+					{
+						bool died = 1;
+						for (int i = 1; i < 10; i++)
+						{
+							if (ships1[i] != 0)
+							{
+								died = 0;
+								break;
+							}
+						}
+						if (died == 1)
+						{
+							winBot = 1;
+							break;
+						}
+						cout << "\nУбит\n\n" << endl;
+					}
+					else
+					{
+						cout << "\nПромах\n\n" << endl;
+					}
+				}
+				else if (mode == 1)
+				{
+					bool changeDir = 0;
+
+					if (dir == 0) //влево
+					{
+						if (xBot > 0)
+							xBot--;
+						else
+						{
+							changeDir = 1;
+						}
+					}
+					else if (dir == 1) //вправо
+					{
+						if (xBot < N - 1)
+							xBot++;
+						else
+						{
+							changeDir = 1;
+						}
+
+					}
+					else if (dir == 2) //вверх
+					{
+						if (yBot > 0)
+							yBot--;
+						else
+						{
+							changeDir = 1;
+						}
+					}
+					else if (dir == 3) //вниз
+					{
+						if (yBot < N - 1)
+							yBot++;
+						else
+						{
+							changeDir = 1;
+						}
+					}
+
+					if (changeDir == 1)
+					{
+						if (!dirs.empty())
+						{
+							dir = dirs[dirs.size() - 1];
+							dirs.pop_back();
+						}
+						xBot = firstHitX; //возвращаем позицию, если неудача 
+						yBot = firstHitY;
+
+						continue;
+					}
+
+					resultShot = shot(xBot, yBot, map, mask, ships1);
+
+					if (resultShot == 1)
+					{
+						cout << "\nРанен\n\n";
+					}
+					else if (resultShot == 2)
+					{
+						mode = 0;
+
+						dirs.clear();
+
+						dirs.push_back(3);
+						dirs.push_back(2);
+						dirs.push_back(1);
+						dirs.push_back(0);
+
+						bool died = 1;
+						for (int i = 1; i < 10; i++)
+						{
+							if (ships1[i] != 0)
+							{
+								died = 0;
+								break;
+							}
+						}
+						if (died == 1)
+						{
+							winBot = 1;
+							break;
+						}
+						cout << "\nУбит\n\n" << endl;
+					}
+					else
+					{
+						if (!dirs.empty())
+						{
+							dir = dirs[dirs.size() - 1];
+							dirs.pop_back();
+						}
+
+						xBot = firstHitX;
+						yBot = firstHitY;
+
+						cout << "\nПромах\n\n" << endl;
+					}
+				}
+
+		step = !step;
+	}
+	if (winPlayer)
+	{
+		cout << "Победа" << endl;
+	}
+	else if (winBot)
+	{
+		cout << "Поражение" << endl;
+	}
+
+
 		mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y - 3);
 		window.draw(mouse);
 		window.display();
@@ -440,269 +651,268 @@ int main() {
 	showMenu(window);
 
 	showGameScene(window);
-
-		//	int map[N][N] = { 0 }; //человек
-		//	int map2[N][N] = { 0 }; //комп
-
-		//	int ships1[10] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1 }; //жизни
-		//	int ships2[10] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1 };
-
-		//	int mask[N][N] = { 0 }; //chelovek
-		//	int mask2[N][N] = { 0 }; //peka
-
-		//	for (int i = 1; i <= 10; i++)
-		//	{
-		//		set_rand_ships(map, ships1[i], i);
-		//	}
-		//	for (int i = 1; i <= 10; i++)
-		//	{
-		//		set_rand_ships(map2, ships2[i], i);
-		//	}   ///////////////////////////////////////////////////////
-
-		//	int x = 0, y = 0;
-
-		//	int firstHitX = 0;
-		//	int firstHitY = 0;
-
-		//	int mode = 0;
-
-		//	int xBot = 0;
-		//	int yBot = 0;
-
-		//	int dir = 0;
-
-		//	vector <int> dirs;
-
-		//	dirs.push_back(3);
-		//	dirs.push_back(2);
-		//	dirs.push_back(1);
-		//	dirs.push_back(0);
-
-		//	bool winPlayer = 0;
-		//	bool winBot = 0;
-		//	bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
-	/////////////////////////////////////////////////////////////////////////
- 
-		//	while (winPlayer == false && winBot == false)
-		//	{
-		//		int resultShot = 0;
-		//		do
-		//		{
-		//			drawing(map, mask, 0);
-		//			cout << endl;
-		//			drawing(map2, mask2, 1);
-
-		//			if (step == 1)
-		//			{
-		//				cout << endl << "Введите координаты цели (цифрами): ";
-
-		//				cin >> x;
-		//				cin >> y;
-
-		//				resultShot = shot(x, y, map2, mask2, ships2);
-
-		//				if (resultShot == 1)
-		//				{
-		//					cout << "\nРанен\n\n";
-		//				}
-		//				else if (resultShot == 2)
-		//				{
-		//					bool died = 1;
-		//					for (int i = 1; i < 10; i++)
-		//					{
-		//						if (ships2[i] != 0)
-		//						{
-		//							died = 0;
-		//							break;
-		//						}
-		//					}
-		//					if (died == 1)
-		//					{
-		//						winPlayer = 1;
-		//						break;
-		//					}
-		//					cout << "\nУбит\n\n" << endl;
-		//				}
-		//				else
-		//				{
-		//					cout << "\nПромах\n\n" << endl;
-		//				}
-		//			}
-		//			else
-		//			{
-		//				cout << endl << "Ход компьютера\n";
-		//				Sleep(500);
-
-		//				if (mode == 0)
-		//				{
-		//					do //проверка стрелял ли бот в эту точку
-		//					{
-		//						xBot = rand() % N;
-		//						yBot = rand() % N;
-
-		//						resultShot = shot(xBot, yBot, map, mask, ships1);
-		//					} while (resultShot == 3);
-
-		//					if (resultShot == 1)
-		//					{
-		//						mode = 1;
-
-		//						firstHitX = xBot;
-		//						firstHitY = yBot;
-
-		//						if (!dirs.empty()) //проверяем не пустой ли вектор
-		//						{
-		//							dir = dirs[dirs.size() - 1]; //доступ к последнему элементу
-		//							dirs.pop_back();
-		//						}
-
-		//						cout << "\nРанен\n\n";
-		//					}
-		//					else if (resultShot == 2)
-		//					{
-		//						bool died = 1;
-		//						for (int i = 1; i < 10; i++)
-		//						{
-		//							if (ships1[i] != 0)
-		//							{
-		//								died = 0;
-		//								break;
-		//							}
-		//						}
-		//						if (died == 1)
-		//						{
-		//							winBot = 1;
-		//							break;
-		//						}
-		//						cout << "\nУбит\n\n" << endl;
-		//					}
-		//					else
-		//					{
-		//						cout << "\nПромах\n\n" << endl;
-		//					}
-		//				}
-		//				else if (mode == 1)
-		//				{
-		//					bool changeDir = 0;
-
-		//					if (dir == 0) //влево
-		//					{
-		//						if (xBot > 0)
-		//							xBot--;
-		//						else
-		//						{
-		//							changeDir = 1;
-		//						}
-		//					}
-		//					else if (dir == 1) //вправо
-		//					{
-		//						if (xBot < N - 1)
-		//							xBot++;
-		//						else
-		//						{
-		//							changeDir = 1;
-		//						}
-
-		//					}
-		//					else if (dir == 2) //вверх
-		//					{
-		//						if (yBot > 0)
-		//							yBot--;
-		//						else
-		//						{
-		//							changeDir = 1;
-		//						}
-		//					}
-		//					else if (dir == 3) //вниз
-		//					{
-		//						if (yBot < N - 1)
-		//							yBot++;
-		//						else
-		//						{
-		//							changeDir = 1;
-		//						}
-		//					}
-
-		//					if (changeDir == 1)
-		//					{
-		//						if (!dirs.empty())
-		//						{
-		//							dir = dirs[dirs.size() - 1];
-		//							dirs.pop_back();
-		//						}
-		//						xBot = firstHitX; //возвращаем позицию, если неудача 
-		//						yBot = firstHitY;
-
-		//						continue;
-		//					}
-
-		//					resultShot = shot(xBot, yBot, map, mask, ships1);
-
-		//					if (resultShot == 1)
-		//					{
-		//						cout << "\nРанен\n\n";
-		//					}
-		//					else if (resultShot == 2)
-		//					{
-		//						mode = 0;
-
-		//						dirs.clear();
-
-		//						dirs.push_back(3);
-		//						dirs.push_back(2);
-		//						dirs.push_back(1);
-		//						dirs.push_back(0);
-
-		//						bool died = 1;
-		//						for (int i = 1; i < 10; i++)
-		//						{
-		//							if (ships1[i] != 0)
-		//							{
-		//								died = 0;
-		//								break;
-		//							}
-		//						}
-		//						if (died == 1)
-		//						{
-		//							winBot = 1;
-		//							break;
-		//						}
-		//						cout << "\nУбит\n\n" << endl;
-		//					}
-		//					else
-		//					{
-		//						if (!dirs.empty())
-		//						{
-		//							dir = dirs[dirs.size() - 1];
-		//							dirs.pop_back();
-		//						}
-
-		//						xBot = firstHitX;
-		//						yBot = firstHitY;
-
-		//						cout << "\nПромах\n\n" << endl;
-		//					}
-		//				}
-
-		//			}
-		//			Sleep(500);
-		//			system("cls");
-		//		} while (resultShot != 0);
-
-		//		step = !step;
-		//	}
-		//	if (winPlayer)
-		//	{
-		//		cout << "Победа" << endl;
-		//	}
-		//	else if (winBot)
-		//	{
-		//		cout << "Поражение" << endl;
-		//	}
-		//	_getch();
-		//	system("cls");
-		//}
-		//system("pause");
-		return 0;
-	
+	//
+	//			int map[N][N] = { 0 }; //человек
+	//			int map2[N][N] = { 0 }; //комп
+	//
+	//			int ships1[10] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1 }; //жизни
+	//			int ships2[10] = { 0, 4, 3, 3, 2, 2, 2, 1, 1, 1 };
+	//
+	//			int mask[N][N] = { 0 }; //chelovek
+	//			int mask2[N][N] = { 0 }; //peka
+	//
+	//			for (int i = 1; i <= 10; i++)
+	//			{
+	//				set_rand_ships(map, ships1[i], i);
+	//			}
+	//			for (int i = 1; i <= 10; i++)
+	//			{
+	//				set_rand_ships(map2, ships2[i], i);
+	//			}   ///////////////////////////////////////////////////////
+	//
+	//			int x = 0, y = 0;
+	//
+	//			int firstHitX = 0;
+	//			int firstHitY = 0;
+	//
+	//			int mode = 0;
+	//
+	//			int xBot = 0;
+	//			int yBot = 0;
+	//
+	//			int dir = 0;
+	//
+	//			vector <int> dirs;
+	//
+	//			dirs.push_back(3);
+	//			dirs.push_back(2);
+	//			dirs.push_back(1);
+	//			dirs.push_back(0);
+	//
+	//			bool winPlayer = 0;
+	//			bool winBot = 0;
+	//			bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
+	//	///////////////////////////////////////////////////////////////////////
+	// 
+	//			while (winPlayer == false && winBot == false)
+	//			{
+	//				int resultShot = 0;
+	//				do
+	//				{
+	//					drawing(map, mask, 0);
+	//					cout << endl;
+	//					drawing(map2, mask2, 1);
+	//
+	//					if (step == 1)
+	//					{
+	//						cout << endl << "Введите координаты цели (цифрами): ";
+	//
+	//						cin >> x;
+	//						cin >> y;
+	//
+	//						resultShot = shot(x, y, map2, mask2, ships2);
+	//
+	//						if (resultShot == 1)
+	//						{
+	//							cout << "\nРанен\n\n";
+	//						}
+	//						else if (resultShot == 2)
+	//						{
+	//							bool died = 1;
+	//							for (int i = 1; i < 10; i++)
+	//							{
+	//								if (ships2[i] != 0)
+	//								{
+	//									died = 0;
+	//									break;
+	//								}
+	//							}
+	//							if (died == 1)
+	//							{
+	//								winPlayer = 1;
+	//								break;
+	//							}
+	//							cout << "\nУбит\n\n" << endl;
+	//						}
+	//						else
+	//						{
+	//							cout << "\nПромах\n\n" << endl;
+	//						}
+	//					}
+	//					else
+	//					{
+	//						cout << endl << "Ход компьютера\n";
+	//						Sleep(500);
+	//
+	//						if (mode == 0)
+	//						{
+	//							do //проверка стрелял ли бот в эту точку
+	//							{
+	//								xBot = rand() % N;
+	//								yBot = rand() % N;
+	//
+	//								resultShot = shot(xBot, yBot, map, mask, ships1);
+	//							} while (resultShot == 3);
+	//
+	//							if (resultShot == 1)
+	//							{
+	//								mode = 1;
+	//
+	//								firstHitX = xBot;
+	//								firstHitY = yBot;
+	//
+	//								if (!dirs.empty()) //проверяем не пустой ли вектор
+	//								{
+	//									dir = dirs[dirs.size() - 1]; //доступ к последнему элементу
+	//									dirs.pop_back();
+	//								}
+	//
+	//								cout << "\nРанен\n\n";
+	//							}
+	//							else if (resultShot == 2)
+	//							{
+	//								bool died = 1;
+	//								for (int i = 1; i < 10; i++)
+	//								{
+	//									if (ships1[i] != 0)
+	//									{
+	//										died = 0;
+	//										break;
+	//									}
+	//								}
+	//								if (died == 1)
+	//								{
+	//									winBot = 1;
+	//									break;
+	//								}
+	//								cout << "\nУбит\n\n" << endl;
+	//							}
+	//							else
+	//							{
+	//								cout << "\nПромах\n\n" << endl;
+	//							}
+	//						}
+	//						else if (mode == 1)
+	//						{
+	//							bool changeDir = 0;
+	//
+	//							if (dir == 0) //влево
+	//							{
+	//								if (xBot > 0)
+	//									xBot--;
+	//								else
+	//								{
+	//									changeDir = 1;
+	//								}
+	//							}
+	//							else if (dir == 1) //вправо
+	//							{
+	//								if (xBot < N - 1)
+	//									xBot++;
+	//								else
+	//								{
+	//									changeDir = 1;
+	//								}
+	//
+	//							}
+	//							else if (dir == 2) //вверх
+	//							{
+	//								if (yBot > 0)
+	//									yBot--;
+	//								else
+	//								{
+	//									changeDir = 1;
+	//								}
+	//							}
+	//							else if (dir == 3) //вниз
+	//							{
+	//								if (yBot < N - 1)
+	//									yBot++;
+	//								else
+	//								{
+	//									changeDir = 1;
+	//								}
+	//							}
+	//
+	//							if (changeDir == 1)
+	//							{
+	//								if (!dirs.empty())
+	//								{
+	//									dir = dirs[dirs.size() - 1];
+	//									dirs.pop_back();
+	//								}
+	//								xBot = firstHitX; //возвращаем позицию, если неудача 
+	//								yBot = firstHitY;
+	//
+	//								continue;
+	//							}
+	//
+	//							resultShot = shot(xBot, yBot, map, mask, ships1);
+	//
+	//							if (resultShot == 1)
+	//							{
+	//								cout << "\nРанен\n\n";
+	//							}
+	//							else if (resultShot == 2)
+	//							{
+	//								mode = 0;
+	//
+	//								dirs.clear();
+	//
+	//								dirs.push_back(3);
+	//								dirs.push_back(2);
+	//								dirs.push_back(1);
+	//								dirs.push_back(0);
+	//
+	//								bool died = 1;
+	//								for (int i = 1; i < 10; i++)
+	//								{
+	//									if (ships1[i] != 0)
+	//									{
+	//										died = 0;
+	//										break;
+	//									}
+	//								}
+	//								if (died == 1)
+	//								{
+	//									winBot = 1;
+	//									break;
+	//								}
+	//								cout << "\nУбит\n\n" << endl;
+	//							}
+	//							else
+	//							{
+	//								if (!dirs.empty())
+	//								{
+	//									dir = dirs[dirs.size() - 1];
+	//									dirs.pop_back();
+	//								}
+	//
+	//								xBot = firstHitX;
+	//								yBot = firstHitY;
+	//
+	//								cout << "\nПромах\n\n" << endl;
+	//							}
+	//						}
+	//
+	//					}
+	//					Sleep(500);
+	//					system("cls");
+	//				} while (resultShot != 0);
+	//
+	//				step = !step;
+	//			}
+	//			if (winPlayer)
+	//			{
+	//				cout << "Победа" << endl;
+	//			}
+	//			else if (winBot)
+	//			{
+	//				cout << "Поражение" << endl;
+	//			}
+	//			_getch();
+	//			system("cls");
+	//		}
+	//		system("pause");
+	return 0;
 }
