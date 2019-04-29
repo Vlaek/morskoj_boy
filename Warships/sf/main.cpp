@@ -193,6 +193,7 @@ void showMenu(RenderWindow & window) {
 	bool isMenu = 1;
 	int menuNum = 0;
 
+	mouse.setOrigin(Mouse.getSize().x / 2, Mouse.getSize().y / 2);
 	menu1.setPosition(5, 310);
 	menu2.setPosition(5, 400);
 	menu3.setPosition(5, 490);
@@ -226,7 +227,7 @@ void showMenu(RenderWindow & window) {
 				while (true)
 				{
 					back.setColor(Color::White);
-					if (IntRect(80, 700, 170, 80).contains(Mouse::getPosition(window))) 
+					if (IntRect(80, 675, 160, 80).contains(Mouse::getPosition(window))) 
 					{
 						back.setColor(Color::Yellow);
 						if (Mouse::isButtonPressed(Mouse::Left)) break;
@@ -251,7 +252,7 @@ void showMenu(RenderWindow & window) {
 		window.draw(menu3);
 		window.draw(i);
 		window.draw(mouse);
-		mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y - 3);
+		mouse.setPosition(Mouse::getPosition().x, Mouse::getPosition().y);
 		window.draw(mouse);
 		window.display();
 	}
@@ -283,7 +284,7 @@ void showGameScene(RenderWindow &window) {
 	PF.setPosition(330, 135);
 	BF.setPosition(920, 135);
 	background.setPosition(0, 0);
-	back.setPosition(80, 700);
+	back.setPosition(75, 800);
 
 	window.draw(background);
 
@@ -324,15 +325,22 @@ void showGameScene(RenderWindow &window) {
 				else enemyShip[i][j].setFillColor(Color::White);
 			}
 		}
+		back.setColor(Color::White);
+
+		if (IntRect(75, 760, 160, 80).contains(Mouse::getPosition(window)))
+		{
+			back.setColor(Color::Yellow);
+			if (Mouse::isButtonPressed(Mouse::Left) ) showMenu(window);
+		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) showMenu(window);
-
 		window.clear();
 		window.draw(background);
 		window.draw(playerfield);
 		window.draw(PF);
 		window.draw(enemyfield);
 		window.draw(BF);
+		window.draw(back);
 		for (int i = 0; i < 10; i++) 
 		{
 			for (int j = 0; j < 10; j++) 
