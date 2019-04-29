@@ -471,7 +471,6 @@ void showGameScene(RenderWindow &window) {
 			else
 			{
 				cout << endl << "Õîä êîìïüþòåðà\n";
-				Sleep(500);
 
 				if (mode == 0)
 				{
@@ -624,7 +623,7 @@ void showGameScene(RenderWindow &window) {
 					}
 				}
 
-		step = !step;
+		/*step = !step;*/                  // ÒÓÒ ÏÅÐÅÕÎÄ ÕÎÄÀ 
 	}
 	if (winPlayer)
 	{
