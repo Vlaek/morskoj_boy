@@ -327,7 +327,7 @@ void showGameScene(RenderWindow &window) {
 	float timerMicroseconds = 0, clickTime = 0;
 	Clock clock;
 
-	int x = 0, y = 0;
+	int x = 0, y = 0; //////////////////////////////////////////////
 
 	int firstHitX = 0;
 	int firstHitY = 0;
@@ -350,7 +350,8 @@ void showGameScene(RenderWindow &window) {
 	bool winBot = 0;
 	bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
 
-	while (window.isOpen() ) {
+	while (window.isOpen()) 
+	{
 		float cputime = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
 		timerMicroseconds += cputime/1000;
@@ -362,8 +363,10 @@ void showGameScene(RenderWindow &window) {
 				window.close();
 		}
 
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < 10; i++) 
+		{
+			for (int j = 0; j < 10; j++) 
+			{
 				if (map[i][j]) playerShip[i][j].setFillColor(Color(73, 85, 97));
 				else playerShip[i][j].setFillColor(Color::White);
 				if (map2[i][j]) enemyShip[i][j].setFillColor(Color(73, 85, 97));
@@ -397,7 +400,7 @@ void showGameScene(RenderWindow &window) {
 		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window)))
 		{
 			minus.setColor(Color::Yellow);
-			if (Mouse::isButtonPressed(Mouse::Left) && music.getVolume() >= 10 && timerMicroseconds > clickTime + 100) {
+			if (Mouse::isButtonPressed(Mouse::Left) && music.getVolume() >= 0 && timerMicroseconds > clickTime + 100) {
 				clickTime = timerMicroseconds;
 				music.setVolume(music.getVolume() - 10);
 			}
@@ -478,7 +481,7 @@ int main() {
 		//	bool winPlayer = 0;
 		//	bool winBot = 0;
 		//	bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
-
+	/////////////////////////////////////////////////////////////////////////
  
 		//	while (winPlayer == false && winBot == false)
 		//	{
