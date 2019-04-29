@@ -233,6 +233,7 @@ void showMenu(RenderWindow & window) {
 						if (Mouse::isButtonPressed(Mouse::Left)) break;
 					}
 					if (Keyboard::isKeyPressed(Keyboard::Escape)) break;
+
 					window.draw(background);
 					window.draw(back);
 					window.draw(rules);
@@ -246,6 +247,9 @@ void showMenu(RenderWindow & window) {
 				exit(0);
 			}
 		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { exit(0); }
+
 		window.draw(background);
 		window.draw(menu1);
 		window.draw(menu2);
@@ -259,6 +263,7 @@ void showMenu(RenderWindow & window) {
 }
 
 void showGameScene(RenderWindow &window) {
+
 	int map[10][10] = { 0 }; //человек
 	int map2[10][10] = { 0 }; //комп
 
@@ -268,35 +273,43 @@ void showGameScene(RenderWindow &window) {
 	int mask[N][N] = { 0 }; //chelovek
 	int mask2[N][N] = { 0 }; //peka
 
+	Music music;//создаем объект музыки
+	music.openFromFile("sounds/musicGame.ogg");//загружаем файл
+	music.play();//воспроизводим музыку
 
-	RectangleShape playerfield(Vector2f(555,555)), enemyfield(Vector2f(555,555));
+	RectangleShape playerfield(Vector2f(444,444)), enemyfield(Vector2f(444,444));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
-	Texture PlayerFlot, BotFlot, menuBackground, Mouse, menuBack;
+	Texture PlayerFlot, BotFlot, menuBackground, Mouse, menuBack, PlusSound, MinusSound;
 
 	PlayerFlot.loadFromFile("images/PlayerFlot.png");
 	BotFlot.loadFromFile("images/BotFlot.png");
-	menuBackground.loadFromFile("images/backgroundInGame.png");
+	menuBackground.loadFromFile("images/background.png");
 	Mouse.loadFromFile("images/Mouse.png");
 	menuBack.loadFromFile("images/back.png");
+	PlusSound.loadFromFile("images/PlusSound.png");
+	MinusSound.loadFromFile("images/MinusSound.png");
 
-	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground), mouse(Mouse), back(menuBack);
+	Sprite PF(PlayerFlot), BF(BotFlot), background(menuBackground), mouse(Mouse), back(menuBack), plus(PlusSound), minus(MinusSound);
 
-	PF.setPosition(330, 135);
-	BF.setPosition(920, 135);
+	PF.setPosition(555, 135);
+	BF.setPosition(1060, 135);
 	background.setPosition(0, 0);
-	back.setPosition(75, 800);
+	back.setPosition(75, 700);
+	plus.setPosition(75, 430);
+	minus.setPosition(75, 500);
+
 
 	window.draw(background);
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			playerShip[i][j].setSize(Vector2f(50, 50));
-			playerShip[i][j].setPosition(235 + i * 55, 205 + j * 55);
-			enemyShip[i][j].setSize(Vector2f(50, 50));
-			enemyShip[i][j].setPosition(835 + i * 55, 205 + j * 55);
+			playerShip[i][j].setSize(Vector2f(40, 40));
+			playerShip[i][j].setPosition(519 + i * 44, 204 + j * 44);
+			enemyShip[i][j].setSize(Vector2f(40, 40));
+			enemyShip[i][j].setPosition(1044 + i * 44, 204 + j * 44);
 		}
 	}
-	playerfield.setPosition(230, 200); enemyfield.setPosition(830, 200);
+	playerfield.setPosition(515, 200); enemyfield.setPosition(1040, 200);
 	playerfield.setFillColor(Color::Black); enemyfield.setFillColor(Color::Black);
 
 	for(int i = 1; i <= 10; i++)
@@ -327,13 +340,38 @@ void showGameScene(RenderWindow &window) {
 		}
 		back.setColor(Color::White);
 
-		if (IntRect(75, 760, 160, 80).contains(Mouse::getPosition(window)))
+		if (IntRect(75, 660, 160, 80).contains(Mouse::getPosition(window)))
 		{
 			back.setColor(Color::Yellow);
 			if (Mouse::isButtonPressed(Mouse::Left) ) showMenu(window);
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) showMenu(window);
+
+		plus.setColor(Color::White);
+		minus.setColor(Color::White);
+
+		float Volume = 0;
+		float VolumeSound = 0;
+		
+		music.setLoop(true);
+
+		if (IntRect(75, 410, 60, 60).contains(Mouse::getPosition(window))) { plus.setColor(Color::Yellow); VolumeSound = 1; }
+		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window))) { minus.setColor(Color::Yellow); VolumeSound = 2; }
+
+		if (Mouse::isButtonPressed(Mouse::Left))
+
+		if (VolumeSound == 1)
+		{
+			 Volume = Volume + 10;
+		}
+		if (VolumeSound == 2)
+		{
+			
+			Volume = Volume - 10;
+		}
+		music.setVolume(Volume);
+
 		window.clear();
 		window.draw(background);
 		window.draw(playerfield);
@@ -341,6 +379,8 @@ void showGameScene(RenderWindow &window) {
 		window.draw(enemyfield);
 		window.draw(BF);
 		window.draw(back);
+		window.draw(plus);
+		window.draw(minus);
 		for (int i = 0; i < 10; i++) 
 		{
 			for (int j = 0; j < 10; j++) 
