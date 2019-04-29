@@ -352,23 +352,21 @@ void showGameScene(RenderWindow &window) {
 		minus.setColor(Color::White);
 
 		float Volume = 0;
-		float VolumeSound = 0;
 		
 		music.setLoop(true);
 
-		if (IntRect(75, 410, 60, 60).contains(Mouse::getPosition(window))) { plus.setColor(Color::Yellow); VolumeSound = 1; }
-		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window))) { minus.setColor(Color::Yellow); VolumeSound = 2; }
-
-		if (Mouse::isButtonPressed(Mouse::Left))
-
-		if (VolumeSound == 1)
+		if (IntRect(75, 410, 60, 60).contains(Mouse::getPosition(window)))
 		{
-			 Volume = Volume + 10;
-		}
-		if (VolumeSound == 2)
-		{
+			plus.setColor(Color::Yellow);
+			if (Mouse::isButtonPressed(Mouse::Left))
 			
-			Volume = Volume - 10;
+				music.setVolume(Volume + 10);
+			
+		}
+		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window)))
+		{
+			minus.setColor(Color::Yellow);
+			if (Mouse::isButtonPressed(Mouse::Left)) Volume = Volume - 10;
 		}
 		music.setVolume(Volume);
 
