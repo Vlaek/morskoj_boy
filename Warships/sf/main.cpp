@@ -6,6 +6,7 @@
 #include <time.h>
 #include <vector>
 #include <windows.h>
+#include <cstring>
 
 using namespace sf;
 using namespace std;
@@ -145,7 +146,7 @@ void drawing(int map[N][N], int mask[N][N], bool useMask) {
 	}
 }
 
-int shot(int x, int y, int map[N][N], int mask[N][N], int ships[10])
+int shot(int x, int y, int map[N][N], int mask[N][N], int ships[11])
 {
 	int result = 0;
 
@@ -190,7 +191,6 @@ void showMenu(RenderWindow & window) {
 
 	Sprite menu1(NewGame), menu2(Rules), menu3(Exit), back(menuBack), background(menuBackground), i(imba), rules(PageOfRules), mouse(Mouse);
 
-	bool isMenu = 1;
 	int menuNum = 0;
 
 	mouse.setOrigin(Mouse.getSize().x / 2, Mouse.getSize().y / 2);
@@ -204,7 +204,7 @@ void showMenu(RenderWindow & window) {
 
 	window.setMouseCursorVisible(false);
 
-	while (isMenu)
+	while (true)
 	{
 		menu1.setColor(Color::White);
 		menu2.setColor(Color::White);
@@ -220,7 +220,7 @@ void showMenu(RenderWindow & window) {
 		{
 			if (menuNum == 1) 
 			{ 
-				isMenu = false;
+				break;
 			} 
 			if (menuNum == 2)
 			{
@@ -276,6 +276,8 @@ void showGameScene(RenderWindow &window) {
 	Music music;//создаем объект музыки
 	music.openFromFile("sounds/musicGame.ogg");//загружаем файл
 	music.play();//воспроизводим музыку
+	music.setLoop(true);
+	music.setVolume(50);
 
 	RectangleShape playerfield(Vector2f(444,444)), enemyfield(Vector2f(444,444));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
@@ -309,6 +311,7 @@ void showGameScene(RenderWindow &window) {
 			enemyShip[i][j].setPosition(1044 + i * 44, 204 + j * 44);
 		}
 	}
+
 	playerfield.setPosition(515, 200); enemyfield.setPosition(1040, 200);
 	playerfield.setFillColor(Color::Black); enemyfield.setFillColor(Color::Black);
 
@@ -321,8 +324,37 @@ void showGameScene(RenderWindow &window) {
 	{
 		set_rand_ships(map2, ships2[i], i);
 	}
+	float timerMicroseconds = 0, clickTime = 0;
+	Clock clock;
+
+	int x = 0, y = 0;
+
+	int firstHitX = 0;
+	int firstHitY = 0;
+
+	int mode = 0;
+
+	int xBot = 0;
+	int yBot = 0;
+
+	int dir = 0;
+
+	vector <int> dirs;
+
+	dirs.push_back(3);
+	dirs.push_back(2);
+	dirs.push_back(1);
+	dirs.push_back(0);
+
+	bool winPlayer = 0;
+	bool winBot = 0;
+	bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
 
 	while (window.isOpen() ) {
+		float cputime = clock.getElapsedTime().asMicroseconds();
+		clock.restart();
+		timerMicroseconds += cputime/1000;
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -338,6 +370,7 @@ void showGameScene(RenderWindow &window) {
 				else enemyShip[i][j].setFillColor(Color::White);
 			}
 		}
+
 		back.setColor(Color::White);
 
 		if (IntRect(75, 660, 160, 80).contains(Mouse::getPosition(window)))
@@ -350,25 +383,25 @@ void showGameScene(RenderWindow &window) {
 
 		plus.setColor(Color::White);
 		minus.setColor(Color::White);
-
-		float Volume = 0;
 		
-		music.setLoop(true);
-
 		if (IntRect(75, 410, 60, 60).contains(Mouse::getPosition(window)))
 		{
 			plus.setColor(Color::Yellow);
-			if (Mouse::isButtonPressed(Mouse::Left))
-			
-				music.setVolume(Volume + 10);
+			if (Mouse::isButtonPressed(Mouse::Left) && music.getVolume() <= 90 && timerMicroseconds > clickTime + 100) {
+				clickTime = timerMicroseconds;
+				music.setVolume(music.getVolume() + 10);
+			}
 			
 		}
+
 		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window)))
 		{
 			minus.setColor(Color::Yellow);
-			if (Mouse::isButtonPressed(Mouse::Left)) Volume = Volume - 10;
+			if (Mouse::isButtonPressed(Mouse::Left) && music.getVolume() >= 10 && timerMicroseconds > clickTime + 100) {
+				clickTime = timerMicroseconds;
+				music.setVolume(music.getVolume() - 10);
+			}
 		}
-		music.setVolume(Volume);
 
 		window.clear();
 		window.draw(background);
@@ -400,8 +433,6 @@ int main() {
 	srand(time(NULL));
 
 	RenderWindow window(VideoMode::getDesktopMode(), "Test!");
-
-	bool menu = true;   // xz
 
 	showMenu(window);
 
@@ -448,6 +479,7 @@ int main() {
 		//	bool winBot = 0;
 		//	bool step = 1;      // кто ходит первым (1 - игрок, 2 - бот)
 
+ 
 		//	while (winPlayer == false && winBot == false)
 		//	{
 		//		int resultShot = 0;
