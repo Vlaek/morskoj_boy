@@ -278,6 +278,7 @@ void showGameScene(RenderWindow &window) {
 
 	RectangleShape playerfield(Vector2f(444,444)), enemyfield(Vector2f(444,444));
 	RectangleShape playerShip[10][10], enemyShip[10][10];
+	RectangleShape playerShot[10][10], enemyShot[10][10]; // когда стрельнули
 	Texture PlayerFlot, BotFlot, menuBackground, Mouse, menuBack, PlusSound, MinusSound, Lose;
 
 	PlayerFlot.loadFromFile("images/PlayerFlot.png");
@@ -341,6 +342,7 @@ void showGameScene(RenderWindow &window) {
 	int countPlayerShips = 20;
 
 	int dir = 0;
+
 	bool draw = 0; // рисовать начальные корабли
 
 	vector <int> dirs;
@@ -356,6 +358,8 @@ void showGameScene(RenderWindow &window) {
 	bool step = 1; // кто ходит первым (1 - игрок, 0 - бот)
 
 	bool life = 0;
+
+	bool died = 1;
 
 	while (window.isOpen()) 
 	{
@@ -377,8 +381,8 @@ void showGameScene(RenderWindow &window) {
 				{
 					if (map[i][j]) playerShip[i][j].setFillColor(Color(73, 85, 97));
 					else playerShip[i][j].setFillColor(Color::White);
-					//if (map2[i][j]) enemyShip[i][j].setFillColor(Color(73, 85, 97));    //маска
-					//else enemyShip[i][j].setFillColor(Color::White);
+					if (map2[i][j]) enemyShip[i][j].setFillColor(Color(73, 85, 97));    //маска
+					else enemyShip[i][j].setFillColor(Color::White);
 				}
 			}
 			draw = 1;
@@ -404,7 +408,6 @@ void showGameScene(RenderWindow &window) {
 				clickTime = timerMicroseconds;
 				music.setVolume(music.getVolume() + 10);
 			}
-			
 		}
 
 		if (IntRect(75, 480, 60, 60).contains(Mouse::getPosition(window)))
@@ -455,34 +458,24 @@ void showGameScene(RenderWindow &window) {
 	{
 		cout << endl << "Введите координаты цели (цифрами): ";
 
+		window.draw(mouse);
 			cin >> x;
 			cin >> y;
-
-			window.display();
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	for (int j = 0; j < 10; j++)
-		//	{
-		//		if (Mouse::isButtonPressed(Mouse::Left)) i = x; j = y;
-		//	}
-		//}
-
-
 
 		resultShot = shot(x, y, map2, mask2, ships2);
 		cout << countEnemyShips << endl;
 
-		if (resultShot == 1)
+		window.display();
+		if (resultShot == 1) //промах
 		{
 			enemyShip[x][y].setFillColor(Color(255, 255, 0)); //попал
 			window.draw(enemyShip[x][y]);
-			window.display();
 			countEnemyShips--;
 
 		}
-		else if (resultShot == 2)
+		else if (resultShot == 2) //убит
 		{
-			bool died = 1;
+			
 			for (int i = 1; i < 10; i++)
 			{
 				if (ships2[i] = 0)
@@ -493,23 +486,21 @@ void showGameScene(RenderWindow &window) {
 			}
 			if (died == 1)
 			{
+				
+				/*break;*/
+				enemyShip[x][y].setFillColor(Color(255, 255, 0)); //попал
+				window.draw(enemyShip[x][y]);
 				winPlayer = 1;
-				break;
 			}
-			enemyShip[x][y].setFillColor(Color(255, 0, 0)); //убил
+			enemyShip[x][y].setFillColor(Color(55, 0, 0)); //убил
 			window.draw(enemyShip[x][y]);
-			window.display();
 			countEnemyShips--;
 		}
 		else
 		{
-			if (resultShot != 3) {      // чтобы не перекрасить желтую клетку
+			if (resultShot != 3) {      //уже стрелял // чтобы не перекрасить желтую клетку
 				enemyShip[x][y].setFillColor(Color(0, 255, 0)); //мимо
 				window.draw(enemyShip[x][y]);
-			}
-			else 
-			{
-				step = 0;
 			}
 		}
 	}
@@ -517,7 +508,7 @@ void showGameScene(RenderWindow &window) {
 	{
 		cout << endl << "Ход компьютера\n";
 
-
+		window.display();
 		if (mode == 0)
 		{
 			do //проверка стрелял ли бот в эту точку
@@ -528,7 +519,7 @@ void showGameScene(RenderWindow &window) {
 				resultShot = shot(xBot, yBot, map, mask, ships1);
 			} while (resultShot == 3);
 
-			if (resultShot == 1)
+			if (resultShot == 1) //промах
 			{
 				mode = 1;
 
@@ -540,9 +531,6 @@ void showGameScene(RenderWindow &window) {
 					dir = dirs[dirs.size() - 1]; //доступ к последнему элементу
 					dirs.pop_back();
 				}
-
-				playerShip[xBot][yBot].setFillColor(Color(255, 255, 0)); //попал
-				window.draw(playerShip[xBot][yBot]);
 			}
 			else if (resultShot == 2)
 			{
@@ -564,13 +552,11 @@ void showGameScene(RenderWindow &window) {
 				}
 				playerShip[xBot][yBot].setFillColor(Color(255, 0, 0));  //убил
 				window.draw(playerShip[xBot][yBot]);
-				window.display();
 			}
 			else
 			{
-				playerShip[xBot][yBot].setFillColor(Color(0, 255, 0)); //попал
+				playerShip[xBot][yBot].setFillColor(Color(0, 255, 0)); // МИМО
 				window.draw(playerShip[xBot][yBot]);
-				window.display();
 			}
 		}
 		else if (mode == 1)
@@ -630,9 +616,9 @@ void showGameScene(RenderWindow &window) {
 
 			resultShot = shot(xBot, yBot, map, mask, ships1);
 
-			if (resultShot == 1)
+			if (resultShot == 1) //промах
 			{
-				playerShip[xBot][yBot].setFillColor(Color(255, 255, 0)); //попал
+				playerShip[xBot][yBot].setFillColor(Color(255, 0, 0)); //промах
 				window.draw(playerShip[xBot][yBot]);
 			}
 			else if (resultShot == 2)
@@ -676,12 +662,13 @@ void showGameScene(RenderWindow &window) {
 				xBot = firstHitX;
 				yBot = firstHitY;
 
-				playerShip[xBot][yBot].setFillColor(Color(0, 255, 0)); //мимо
+				playerShip[xBot][yBot].setFillColor(Color(255, 0, 0)); //POPAL    //КРАШУ КРАСНЫМ, ТК МОЙ КОРАБЛИК ПОДБИТ
 				window.draw(playerShip[xBot][yBot]);
 			}
 		}
 	}
-								
+				
+	window.display();
 	} while (resultShot != 0);
 			
 	step = !step;
@@ -710,6 +697,7 @@ int main() {
 	showMenu(window);
 
 	showGameScene(window);
+
 	//
 	//			int map[N][N] = { 0 }; //человек
 	//			int map2[N][N] = { 0 }; //комп
