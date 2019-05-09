@@ -218,6 +218,7 @@ void showMenu(RenderWindow & window) {
 		{
 			if (menuNum == 1) 
 			{ 
+				window.close();
 				break;
 			} 
 			if (menuNum == 2)
